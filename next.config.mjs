@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+    webpack: (config, { isServer }) => {
+      // Do not manually add mini-css-extract-plugin, Next.js handles it.
+      return config;
+    },
+  };
+  
+  export default nextConfig;
+  
