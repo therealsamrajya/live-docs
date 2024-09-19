@@ -45,12 +45,12 @@ export const createDocument = async ({userId,email}:CreateDocumentParams) => {
 export const getDocument = async({roomId,userId}:{roomId:string,userId:string}) => {
     try {
         const room = await liveblocks.getRoom(roomId)
-        // const hasAccess = Object.keys(room.usersAccesses).includes(userId)
+        const hasAccess = Object.keys(room.usersAccesses).includes(userId)
     
-        // if(!hasAccess)
-        // {
-        //     throw new Error("You don't have access to this room")
-        // }
+        if(!hasAccess)
+        {
+            throw new Error("You don't have access to this room")
+        }
     
         return parseStringify(room)
     } catch (error) {
@@ -81,3 +81,21 @@ export const updateDocument = async(roomId:string,title:string) => {
         
     }
 }
+
+
+
+
+export const getDocuments = async(email: string) => {
+    try {
+        const rooms = await liveblocks.getRooms({userId:email})
+        
+    
+        return parseStringify(rooms)
+    } catch (error) {
+        console.log(`Error happened while getting  room: ${error}`);
+        
+        
+    }
+
+}
+
