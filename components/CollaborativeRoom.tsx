@@ -12,8 +12,8 @@ import { updateDocument } from '@/lib/actions/room.action';
 import Loader from './Loader';
 
 
-const CollaborativeRoom = ({roomId,roomMetadata}:CollaborativeRoomProps) => {
-  const currentUserType="editor"
+const CollaborativeRoom = ({roomId,roomMetadata,users,currentUserType}:CollaborativeRoomProps) => {
+
   const [documentTitle, setDocumentTitle] = useState(roomMetadata.title)
   const [editing,setEditing]= useState(false)
   const [loading, setLoading] = useState(false)
@@ -73,38 +73,46 @@ const CollaborativeRoom = ({roomId,roomMetadata}:CollaborativeRoomProps) => {
   return (
     
     <RoomProvider id={roomId}>
-      <ClientSideSuspense fallback={<Loader/>}>
-       <div className="collaborative-room">
-       <Header>
-       <div ref={containerRef} className='flex w-fit items-center justify-center gap-2'>
-        {editing && !loading ? (
-          <Input
-          type='text'
-          value={documentTitle}
-          ref={inputRef}
-          placeholder='Enter Title'
-          onChange={(e) => setDocumentTitle(e.target.value)}
-          onKeyDown={updateTitleHandler}
-          disable = {!editing} className='document-title-input'/>
-        ):(
-          <>
-          <p className='document-title'>{documentTitle}</p></>
-        )}
+    <ClientSideSuspense fallback={<Loader />}>
+      <div className="collaborative-room">
+        <Header>
+          <div ref={containerRef} className="flex w-fit items-center justify-center gap-2">
+            {editing && !loading ? (
+              <Input 
+                type="text"
+                value={documentTitle}
+                ref={inputRef}
+                placeholder="Enter title"
+                onChange={(e) => setDocumentTitle(e.target.value)}
+                onKeyDown={updateTitleHandler}
+                disable={!editing}
+                className="document-title-input"
+              />
+            ) : (
+              <>
+                <p className="document-title">{documentTitle}</p>
+              </>
+            )}
 
-        {currentUserType === "editor" && !editing && (
-          <Image src="/assets/icons/edit.svg" alt="edit" width={24} height={24}
-          onClick={() => setEditing(true)} className="pointer" />
-        )}
-        {currentUserType !== "editor" && !editing && (
-          <p className="view-only-tag">View Only</p>
-          
-        )}
+            {currentUserType === 'editor' && !editing && (
+              <Image 
+                src="/assets/icons/edit.svg"
+                alt="edit"
+                width={24}
+                height={24}
+                onClick={() => setEditing(true)}
+                className="pointer"
+              />
+            )}
 
-        {loading && <p className='text-sm text-gray-400'>saving...</p>} 
-        
-       </div>
-       <div className="flex w-full flex-1 justify-end gap-2 sm:gap-3">
-        <ActiveCollaborators/>
+            {currentUserType !== 'editor' && !editing && (
+              <p className="view-only-tag">View only</p>
+            )}
+
+            {loading && <p className="text-sm text-gray-400">saving...</p>}
+          </div>
+          <div className="flex w-full flex-1 justify-end gap-2 sm:gap-3">
+            <ActiveCollaborators />
         <SignedOut>
             <SignInButton />
           </SignedOut>
@@ -114,7 +122,7 @@ const CollaborativeRoom = ({roomId,roomMetadata}:CollaborativeRoomProps) => {
        </div>
        
       </Header>
-      <Editor/>
+      <Editor roomId={roomId} currentUserType={currentUserType}/>
        </div>
       </ClientSideSuspense>
     </RoomProvider>
